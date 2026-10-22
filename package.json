@@ -1,0 +1,15 @@
+{
+  "name": "rhdh-local",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "yarn@4.3.1",
+  "workspaces": [
+    "projects/rhdh-local",
+    "packages/*",
+    "plugins/*",
+    "translations-pt"
+  ],
+  "resolutions": {
+    "got": "11.8.2"
+  }
+}

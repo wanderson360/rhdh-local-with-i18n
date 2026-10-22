@@ -58,3 +58,21 @@ plugins:
   # Lightspeed backend plugin
   - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-lightspeed-backend:{{inherit}}'
     disabled: false
+  
+  # translations-pt
+  - package: ./translations-pt
+    disabled: false
+    pluginConfig:
+      dynamicPlugins:
+        frontend:
+          internal.plugin-translations-pt:
+            translationResources:
+              - importName: catalogTranslationsPT
+                module: Alpha
+                ref: catalogTranslationRef
+              - importName: catalogReactTranslationsPT
+                module: Alpha
+                ref: catalogReactTranslationRef
+              - importName: coreComponentsTranslationsPT
+                module: Alpha
+                ref: coreComponentsTranslationRef
