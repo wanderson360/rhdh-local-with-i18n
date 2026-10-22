@@ -6,8 +6,8 @@ metadata:
 data:
   app-config.yaml: |-
     # This is the default rhdh-local config, and any user configuration should be added app-config.local.yaml instead
-  organization:
-    name: Minha Organização
+organization:
+  name: Minha Organização
 
 i18n:
   defaultLocale: pt-BR

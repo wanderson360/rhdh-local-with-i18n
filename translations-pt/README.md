@@ -261,3 +261,58 @@ Após o deploy:
 Uma validação com `yarn start` não substitui esse teste. No deploy, é preciso
 validar tanto a configuração de idioma e de plugins dinâmicos quanto a presença
 do `dist-scalprum/` no artefato que chega ao ambiente de execução.
+
+## 6. Habilitar o seletor de idioma
+Para habilitar o seletor de idioma (botão de "Language") em versões mais antigas do Red Hat Developer Hub (RHDH) ou do Backstage (o framework no qual ele se baseia), é importante entender que essa funcionalidade depende do sistema de internacionalização (i18n), que foi introduzido em versões mais recentes.
+
+Aqui estão os passos e requisitos para habilitar essa função em versões que não a possuem nativamente ou onde ela está desativada:
+
+1. Requisitos de Versão
+O suporte oficial a i18n e ao seletor de idiomas no user-settings exige:
+
+Backstage Core: Versões superiores a 1.15.x.
+RHDH: A partir da versão 1.1 (aproximadamente).
+Se você estiver em uma versão muito antiga (ex: RHDH 1.0 ou Backstage < 1.10), o botão simplesmente não existirá no código do plugin de configurações de usuário.
+2. Configuração no App.tsx
+Em versões anteriores, a API de tradução precisava ser explicitamente registrada no packages/app/src/App.tsx. Certifique-se de que a TranslationApi está configurada:
+
+import { i18nTranslationApi } from '@backstage/core-plugin-api';
+
+const app = createApp({
+  apis: [
+    // ... outras APIs
+    createApiFactory({
+      api: translationApiRef,
+      deps: { languageApi: languageApiRef },
+      factory: ({ languageApi }) =>
+        i18nTranslationApi.create({
+          languageApi,
+          // Aqui você define os idiomas suportados
+          availableLanguages: ['en', 'pt'],
+        }),
+    }),
+  ],
+  // ...
+});
+
+3. Habilitação via Configuração (app-config.yaml)
+Verifique se a configuração do aplicativo permite a troca de idiomas. Algumas versões do RHDH permitem isso via configuração dinâmica:
+app:
+  localization:
+    enabled: true # Habilita o suporte a localização
+    defaultLanguage: en
+    languages:
+      - en
+      - pt
+
+4. Atualização do Plugin de User Settings
+O botão que você vê na imagem faz parte do @backstage/plugin-user-settings. Se o seu ambiente for customizado:
+
+Certifique-se de que o pacote @backstage/plugin-user-settings no seu package.json está atualizado.
+Nas versões mais recentes, o componente UserSettingsLanguage é adicionado automaticamente à página de configurações, mas em versões de transição, você pode precisar adicioná-lo manualmente se estiver usando uma página de perfil customizada.
+5. Instalação de Traduções
+Para que o "Português (Brasil)" apareça, é necessário que o pacote de tradução esteja instalado e registrado:
+
+Instale o pacote de idiomas (ex: @backstage/theme-language-pt).
+No RHDH, isso geralmente é feito através de "Dynamic Plugins". Verifique se o plugin de tradução para PT-BR está listado no seu dynamic-plugins.yaml.
+Resumo para versões antigas: Se a sua versão for anterior à implementação da i18nApi, a única forma de "habilitar" é atualizando o core do Red Hat Developer Hub para a versão mais recente disponível (atualmente 1.2 ou superior), onde essa funcionalidade é padrão.
